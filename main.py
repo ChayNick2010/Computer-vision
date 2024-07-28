@@ -1,3 +1,4 @@
+# Прога получает и обрабатывает изображение
 import pyautogui
 import time
 import numpy as np
@@ -32,21 +33,64 @@ if nfs_window_location is None:
 # Наша target-картинка - это заголовочная полоска окна.
 # Для получения скриншота, мы берем ее левую точку (0),
 # а к верхней (1) прибавляем высоту (3)
-left = int(nfs_window_location[0])
-top = int(nfs_window_location[1]+nfs_window_location[3])
+left = nfs_window_location[0]
+top = nfs_window_location[1]+nfs_window_location[3]
 
 # ВНИМАНИЕ!  У вас, скорее всего, будет другое разрешение, т.к. у меня 4К-монитор!
 # Здесь надо выставить те параметры, которые вы задали в игре.
 window_resolution = (640, 480)
 
+window = (left, top, left+window_resolution[0], top+window_resolution[1])
 
 cv2.namedWindow('result')
 
 while True:
 
-    pix = pyautogui.screenshot(region=(left, top, window_resolution[0], window_resolution[1]))
+    pix = pyautogui.screenshot(region=(int(left), int(top), window_resolution[0], window_resolution[1]))
     numpix = cv2.cvtColor(np.array(pix), cv2.COLOR_RGB2BGR)
 
+
+    frame_hsv = cv2.cvtColor(numpix, cv2.COLOR_BGR2HSV)
+
+    frame_h = frame_hsv[:, :, 0]
+    frame_s = frame_hsv[:, :, 1]
+    frame_v = frame_hsv[:, :, 2]
+
+    #Зеленый
+    min_ = (50, 120, 90)
+    max_ = (69, 220, 220)
+    mask = cv2.inRange(frame_hsv, min_, max_)
+    result1 = cv2.bitwise_and(numpix, numpix, mask=mask)
+
+    #Желтый
+    min_ = (20, 100, 100)
+    max_ = (30, 255, 255)
+    mask = cv2.inRange(frame_hsv, min_, max_)
+    result2 = cv2.bitwise_and(numpix, numpix, mask=mask)
+
+
+    result_all = cv2.bitwise_or(result1, result2)
+    result_rgb = cv2.cvtColor(result_all, cv2.COLOR_RGB2GRAY)
+    contours = cv2.findContours(result_rgb, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+    # Сами структуры контуров хранятся в начальном элементе возвращаемого значения:
+    contours = contours[0]
+
+    # Их, кстати, может и не быть:
+    if contours:
+        contours = sorted(contours, key=cv2.contourArea, reverse=True)
+
+        # Третий аргумент — это индекс контура, который мы хотим вывести. Мы хотим самый большой.
+        # Вывести все можно, передав -1 вместо 0:
+        cv2.drawContours(numpix, contours, -1, (255, 0, 0), 2)
+
+        # Получаем прямоугольник, обрамляющий наш контур:
+        (x, y, w, h) = cv2.boundingRect(contours[0])
+
+        # И выводим его:
+        cv2.rectangle(result_rgb, (x, y), (x + w, y + h), (0, 255, 0), 1)
+
+
+    cv2.imshow('mask', result_rgb)
     cv2.imshow('result', numpix)
     if cv2.waitKey(1) == 27:
         break
