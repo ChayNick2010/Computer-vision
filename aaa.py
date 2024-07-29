@@ -1,6 +1,4 @@
 # Прога получает и обрабатывает изображение
-import ctypes
-import time
 import pyautogui
 import time
 import numpy as np
@@ -30,7 +28,7 @@ while searching_attempt <= 5:
 if nfs_window_location is None:
     print('NFS Window not found')
     exit(1)
-0
+
 # Извлекаем из картинки-скриншота только данные окна NFS.
 # Наша target-картинка - это заголовочная полоска окна.
 # Для получения скриншота, мы берем ее левую точку (0),
@@ -50,7 +48,7 @@ while True:
 
     pix = pyautogui.screenshot(region=(int(left), int(top), window_resolution[0], window_resolution[1]))
     numpix = cv2.cvtColor(np.array(pix), cv2.COLOR_RGB2BGR)
-    numpix = numpix[window_resolution[1] // 2:, :, :]
+
 
     frame_hsv = cv2.cvtColor(numpix, cv2.COLOR_BGR2HSV)
 
@@ -65,26 +63,13 @@ while True:
     result1 = cv2.bitwise_and(numpix, numpix, mask=mask)
 
     #Желтый
-    min_3 = (30, 100, 100)
-    max_3 = (32, 255, 255)
-    mask = cv2.inRange(frame_hsv, min_3, max_3)
+    min_ = (30, 100, 100)
+    max_ = (32, 255, 255)
+    mask = cv2.inRange(frame_hsv, min_, max_)
     result2 = cv2.bitwise_and(numpix, numpix, mask=mask)
 
-    #Красный
-    min_1 = (0, 130, 40)
-    max_1 = (21, 160, 170)
-    mask = cv2.inRange(frame_hsv, min_, max_)
-    result = cv2.bitwise_and(numpix, numpix, mask=mask)
 
-    min_2 = (155, 135, 40)
-    max_2 = (180, 155, 180)
-    mask2 = cv2.inRange(frame_hsv, min_2, max_2)
-    result3 = cv2.bitwise_and(numpix, numpix, mask=mask2)
-
-    result13 = cv2.bitwise_or(result, result3)
-
-    result_12 = cv2.bitwise_or(result1, result2)
-    result_all = cv2.bitwise_or(result_12,result13)
+    result_all = cv2.bitwise_or(result1, result2)
     result_rgb = cv2.cvtColor(result_all, cv2.COLOR_RGB2GRAY)
     contours = cv2.findContours(result_rgb, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
     # Сами структуры контуров хранятся в начальном элементе возвращаемого значения:
@@ -113,8 +98,7 @@ while True:
 
         cv2.line(numpix, startP, center, (0, 255, 0), 1)
 
-        func = x1-320
-        print(func)
+
 
     cv2.imshow('mask', result_rgb)
     cv2.imshow('result', numpix)
