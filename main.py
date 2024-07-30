@@ -6,6 +6,7 @@ import time
 import numpy as np
 import cv2
 import imutils
+from control import key_press, SC_LEFT, SC_RIGHT, SC_UP, SC_DOWN, key_down
 
 # Ждем три секунды, успеваем переключиться на окно:
 print('waiting for 2 seconds...')
@@ -115,6 +116,20 @@ while True:
 
         func = x1-320
         print(func)
+        if func > 0:
+            key_press(SC_UP, interval=0.15)
+            time.sleep(0.05)
+            key_press(SC_RIGHT, interval=0.15)
+            if func > 270:
+                key_press(SC_DOWN, interval=0.15)
+                key_press(SC_RIGHT, interval=0.15)
+        else:
+            key_press(SC_UP, interval=0.15)
+            time.sleep(0.05)
+            key_press(SC_LEFT, interval=0.15)
+            if func < -270:
+                key_press(SC_DOWN, interval=0.15)
+                key_press(SC_LEFT, interval=0.15)
 
     cv2.imshow('mask', result_rgb)
     cv2.imshow('result', numpix)
