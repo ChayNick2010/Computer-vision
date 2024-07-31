@@ -11,6 +11,7 @@ from control import key_press, SC_LEFT, SC_RIGHT, SC_UP, SC_DOWN, key_down
 
 
 # Ждем три секунды, успеваем переключиться на окно:
+
 print('waiting for 2 seconds...')
 time.sleep(2)
 
