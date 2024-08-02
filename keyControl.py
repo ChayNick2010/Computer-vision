@@ -18,7 +18,10 @@ def control_car(func):
 
     if func < 20 and func > -20:
         key_press(SC_INSERT, interval=0.02)
-        fast + 1
+        if fast == (2, 3, 4, 5):
+            fast + 1
+        if fast == (6,7):
+            fast + 0
     if func > 50 and fast == (4, 5, 6, 7):
         key_press(SC_DELETE, interval=0.02)
         fast - 1
