@@ -69,27 +69,23 @@ while True:
     result1 = cv2.bitwise_and(numpix, numpix, mask=mask)
 
     #Желтый
-    min_3 = (30, 100, 100)
-    max_3 = (32, 255, 255)
-    mask = cv2.inRange(frame_hsv, min_3, max_3)
-    result2 = cv2.bitwise_and(numpix, numpix, mask=mask)
+    #min_3 = (30, 100, 100)
+    #max_3 = (32, 255, 255)
+    #mask = cv2.inRange(frame_hsv, min_3, max_3)
+    #result2 = cv2.bitwise_and(numpix, numpix, mask=mask)
 
     #Красный
-    min_1 = (0, 130, 40)
-    max_1 = (21, 160, 170)
-    mask = cv2.inRange(frame_hsv, min_, max_)
-    result = cv2.bitwise_and(numpix, numpix, mask=mask)
+    #min_1 = (0, 130, 40)
+    #max_1 = (21, 160, 170)
+    #mask = cv2.inRange(frame_hsv, min_, max_)
+    #result = cv2.bitwise_and(numpix, numpix, mask=mask)
 
-    min_2 = (155, 135, 40)
-    max_2 = (180, 155, 180)
-    mask2 = cv2.inRange(frame_hsv, min_2, max_2)
-    result3 = cv2.bitwise_and(numpix, numpix, mask=mask2)
+    #min_2 = (155, 135, 40)
+    #max_2 = (180, 155, 180)
+    #mask2 = cv2.inRange(frame_hsv, min_2, max_2)
+    #result3 = cv2.bitwise_and(numpix, numpix, mask=mask2)
 
-    result13 = cv2.bitwise_or(result, result3)
-
-    result_12 = cv2.bitwise_or(result1, result2)
-    result_all = cv2.bitwise_or(result_12,result13)
-    result_rgb = cv2.cvtColor(result_all, cv2.COLOR_RGB2GRAY)
+    result_rgb = cv2.cvtColor(result1, cv2.COLOR_RGB2GRAY)
     contours = cv2.findContours(result_rgb, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
     # Сами структуры контуров хранятся в начальном элементе возвращаемого значения:
     contours = contours[0]
@@ -111,8 +107,8 @@ while True:
         (x1, y1), radius = cv2.minEnclosingCircle(contours[0])
         center = (int(x1), int(y1))
         radius = int(radius)
-        X = result_all.shape[0]
-        Y = result_all.shape[1]
+        X = result1.shape[0]
+        Y = result1.shape[1]
         startP = (Y // 2, X)
 
         cv2.line(numpix, startP, center, (0, 255, 0), 1)
